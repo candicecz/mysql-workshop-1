@@ -73,31 +73,96 @@ CREATE TABLE chickens(
     id INT AUTO_INCREMENT PRIMARY KEY,
     typeOfChicken ENUM('rooster','hen','chicks'),
     dateOfBirth TIMESTAMP,
-    date TIMESTAMP
 );
-
-SELECT typeOfChicken COUNT(*),
-FROM chickens,
-WHERE date = '2017-07-10' AND typeOfChicken = 'chick',
-GROUP BY typeOfChicken;
-
-SELECT COUNT(dateOfBirth)
-FROM chickens,
-WHERE 'dateOfBirth' >'2017-06-01'  -- pretending that we know that it takes 40 days for a chick to mature.
+SELECT COUNT(*) FROM chickens WHERE dateOfBirth='2017-07-10'
 
 
 --exercise 10
 CREATE database hotel;
 use hotel;
-CREATE TABLE floors (
+CREATE TABLE floors(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    amountOfWindows INT,
-    roomWithCarpet INT,
-);
+    numberOfWindows INT,
+    roomWithCarpet TINYINT);
+
 CREATE TABLE rooms(
     id INT AUTO_INCREMENT PRIMARY KEY,
     dateAvailableForRent TIMESTAMP,
-    rentableRoom TINYINT,
+    categoryOfRoom ENUM('janitor closet','public laundry','gym','room'),
+    rentable TINYINT,
     privateKitchen TINYINT,
-    threePersonOccupation TINYINT);
-//floors id
+    threePersonOccupation TINYINT,
+    floorID INT);
+
+
+SELECT * FROM rooms
+JOIN floors
+ON rooms.floorID = floors.id;
+
+INSERT INTO floors(numberOfWindows, roomWithCarpet)  VALUES (10,14);
+INSERT INTO floors(numberOfWindows, roomWithCarpet)  VALUES (10,15);
+INSERT INTO floors(numberOfWindows, roomWithCarpet)  VALUES (20,20);
+
+INSERT INTO rooms(dateAvailableForRent,categoryOfRoom,rentable,privateKitchen,threePersonOccupation) VALUES ('2016-10-22','janitor closet',false,false,false);
+INSERT INTO rooms(dateAvailableForRent,categoryOfRoom,rentable,privateKitchen,threePersonOccupation) VALUES ('2016-03-12','room',false,true,false);
+INSERT INTO rooms(dateAvailableForRent,categoryOfRoom,rentable,privateKitchen,threePersonOccupation) VALUES ('2016-04-10','room',true,false,false);
+INSERT INTO rooms(dateAvailableForRent,categoryOfRoom,rentable,privateKitchen,threePersonOccupation) VALUES ('2016-05-12','public laundry',false,false,false);
+INSERT INTO rooms(dateAvailableForRent,categoryOfRoom,rentable,privateKitchen,threePersonOccupation) VALUES ('2016-05-26','gym',false,false,false);
+
+UPDATE rooms
+SET floorID = 1
+WHERE id IN (1,2,5);
+
+UPDATE rooms
+SET floorID = 2
+WHERE id = 2;
+
+UPDATE rooms
+SET floorID = 3
+WHERE floorID IS NULL;
+
+SELECT * FROM rooms, floors
+WHERE floors.id = rooms.floorID;
+
+mysql> SELECT * FROM rooms, floors
+    -> WHERE floors.id = rooms.floorID;
++----+----------------------+----------------+----------+----------------+-----------------------+---------+----+-----------------+----------------+
+| id | dateAvailableForRent | categoryOfRoom | rentable | privateKitchen | threePersonOccupation | floorID | id | numberOfWindows | roomWithCarpet |
++----+----------------------+----------------+----------+----------------+-----------------------+---------+----+-----------------+----------------+
+|  1 | 2017-07-11 18:03:57  | janitor closet |        0 |              0 |                     0 |       1 |  1 |              10 |             14 |
+|  2 | 2017-07-11 18:04:34  | room           |        0 |              1 |                     0 |       2 |  2 |              10 |             15 |
+|  3 | 2017-07-11 18:06:23  | room           |        1 |              0 |                     0 |       3 |  3 |              20 |             20 |
+|  4 | 2017-07-11 18:06:23  | public laundry |        0 |              0 |                     0 |       3 |  3 |              20 |             20 |
+|  5 | 2017-07-11 18:03:57  | gym            |        0 |              0 |                     0 |       1 |  1 |              10 |             14 |
++----+----------------------+----------------+----------+----------------+-----------------------+---------+----+-----------------+----------------+
+5 rows in set (0.00 sec)
+
+--the list of Rooms available for rent on a specific date
+
+SELECT COUNT(*) FROM rooms
+JOIN floors
+ON floors.id = rooms.floorID
+WHERE dateAvailableForRent = '2017-07-11' AND threePersonOccupation=true;
+
+
+-- The amount of unrentable Rooms (janitor closets, public laundry room, gym, etc.)
+SELECT COUNT(*) FROM rooms
+JOIN floors
+ON floors.id = rooms.floorID
+WHERE rentable = false;
+
+The amount of Rooms having a private Kitchen
+SELECT COUNT(*) FROM rooms
+JOIN floors
+ON floors.id = rooms.floorID
+WHERE privateKitchen = true;
+
+The average amount of windows per Floor
+SELECT id, AVG(numberOfWindows)
+FROM floors;
+
+The amount of Floors having Rooms with carpets
+INSERT INTO floors(numberOfWindows, roomWithCarpet)  VALUES (20,0);
+SELECT COUNT(*)
+FROM floors
+WHERE roomWithCarpet=0;
