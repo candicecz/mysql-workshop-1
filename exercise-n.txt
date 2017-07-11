@@ -1,0 +1,103 @@
+-- exercise 2
+CREATE database decodemtl_test;
+CREATE database decodemtl_addressbook;
+
+--exercise 3
+DROP database decodemtl_test;
+
+ --exercise 4
+SHOW databases;
+
+ -- exercise 5/8 --can't make a table without any columns
+use decodemtl_addressbook;
+CREATE TABLE Account(
+    id INT AUTO_INCREMENT PRIMARY KEY
+);
+CREATE TABLE AddressBook(
+    id INT AUTO_INCREMENT PRIMARY KEY
+);
+CREATE TABLE Entry(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type ENUM('home','work', 'other'),
+    subtype ENUM('phone', 'address', 'email')
+);
+CREATE TABLE Entry(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category ENUM('home','work', 'other'),
+    subcategory ENUM('phone', 'address', 'email')
+);
+
+CREATE TABLE Test(
+    id INT AUTO_INCREMENT PRIMARY KEY
+);
+
+DROP TABLE Test;
+
+AlTER TABLE ENTRY
+DROP category ENUM;
+--exercise 7
+SHOW tables;
+
+--exercise 8
+ALTER TABLE Account
+ADD (
+email VARCHAR(255),
+password VARCHAR(40),
+createdOn DATETIME,
+modifiedOn DATETIME);
+
+ALTER TABLE AddressBook
+ADD (
+accountid INT,
+name VARCHAR(255),
+createdOn DATETIME,
+modifiedOn DATETIME);
+
+ALTER TABLE Entry
+ADD (
+addressBookId INT,
+firstName VARCHAR(255),
+lastName VARCHAR(255),
+birthday DATETIME,
+contentLineOne VARCHAR(255),
+contentLineTwo VARCHAR(255),
+contentLineThree VARCHAR(255),
+contentLineFour VARCHAR(255),
+contentLineFive VARCHAR(255)
+);
+
+-- exercise 9
+CREATE database barnyard;
+use barnyard_animals
+CREATE TABLE chickens(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    typeOfChicken ENUM('rooster','hen','chicks'),
+    dateOfBirth TIMESTAMP,
+    date TIMESTAMP
+);
+
+SELECT typeOfChicken COUNT(*),
+FROM chickens,
+WHERE date = '2017-07-10' AND typeOfChicken = 'chick',
+GROUP BY typeOfChicken;
+
+SELECT COUNT(dateOfBirth)
+FROM chickens,
+WHERE 'dateOfBirth' >'2017-06-01'  -- pretending that we know that it takes 40 days for a chick to mature.
+
+
+--exercise 10
+CREATE database hotel;
+use hotel;
+CREATE TABLE floors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    amountOfWindows INT,
+    roomWithCarpet INT,
+);
+CREATE TABLE rooms(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dateAvailableForRent TIMESTAMP,
+    rentableRoom TINYINT,
+    privateKitchen TINYINT,
+    threePersonOccupation TINYINT);
+//floors id
